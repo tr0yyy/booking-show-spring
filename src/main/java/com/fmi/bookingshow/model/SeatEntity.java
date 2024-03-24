@@ -13,6 +13,6 @@ public class SeatEntity {
     @Id
     @GeneratedValue
     private Long seatId;
-    private Integer rowNumber;
+    private Integer seatRowNumber;
     private Integer seatNumber;
 }
