@@ -15,4 +15,12 @@ public class LocationEntity {
     private Long locationId;
     private String name;
     private String address;
+
+    public LocationEntity(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    public LocationEntity() {
+    }
 }
