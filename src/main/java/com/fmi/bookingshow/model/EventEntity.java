@@ -19,7 +19,7 @@ public class EventEntity {
     private String description;
     @ManyToMany(mappedBy = "events")
     private List<ArtistEntity> artists;
-    @OneToMany
+    @OneToMany(mappedBy = "event")
     private List<TicketEntity> tickets;
     @ManyToOne
     private LocationEntity location;

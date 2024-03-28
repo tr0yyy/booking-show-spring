@@ -17,6 +17,8 @@ public class TicketEntity {
     private UserEntity user;
     @ManyToOne
     private SeatEntity seat;
+    @ManyToOne
+    private EventEntity event;
     private Date purchaseDate;
     private Float price;
 }
