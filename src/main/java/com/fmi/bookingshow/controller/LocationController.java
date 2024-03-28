@@ -6,6 +6,7 @@ import com.fmi.bookingshow.exceptions.DuplicateEntryException;
 import com.fmi.bookingshow.mapper.LocationMapper;
 import com.fmi.bookingshow.model.LocationEntity;
 import com.fmi.bookingshow.service.LocationService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@Slf4j
 public class LocationController {
     private final LocationService locationService;
     private final LocationMapper locationMapper;
-    private final Logger logger = LoggerFactory.getLogger(LocationController.class);
 
     public LocationController(LocationService locationService, LocationMapper locationMapper) {
         this.locationService = locationService;
@@ -36,7 +37,7 @@ public class LocationController {
             location = locationService.addLocation(location);
             return ResponseEntity.ok(locationMapper.locationEntityToOutputLocationDto(location));
         } catch (DuplicateEntryException duplicateEntryException) {
-            this.logger.error(duplicateEntryException.getMessage() + " " + Arrays.toString(duplicateEntryException.getStackTrace()));
+            log.error(duplicateEntryException.getMessage());
             return ResponseEntity.badRequest().body(null);
         }
     }
