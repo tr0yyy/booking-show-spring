@@ -3,8 +3,6 @@ package com.fmi.bookingshow.service;
 import com.fmi.bookingshow.exceptions.DuplicateEntryException;
 import com.fmi.bookingshow.model.LocationEntity;
 import com.fmi.bookingshow.repository.LocationRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
