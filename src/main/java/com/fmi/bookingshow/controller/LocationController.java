@@ -30,7 +30,7 @@ public class LocationController {
         this.apiFactory = apiFactory;
     }
 
-    @PostMapping("/api/location/insert")
+    @PostMapping("/admin/location/insert")
     public ResponseEntity<ResponseDto<OutputLocationDto>> insertLocation(@RequestBody ImportLocationDto locationDto) {
         return apiFactory.create(() -> {
             LocationEntity location = locationMapper.importLocationDtoToLocationEntity(locationDto);
@@ -39,7 +39,7 @@ public class LocationController {
         }, DuplicateEntryException.class);
     }
 
-    @GetMapping("/api/location/get")
+    @GetMapping("/core/location/get")
     public ResponseEntity<ResponseDto<List<OutputLocationDto>>> getLocations() {
         return apiFactory.create(() -> {
             List<LocationEntity> locations = locationService.getLocations();
