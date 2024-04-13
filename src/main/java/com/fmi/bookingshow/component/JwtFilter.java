@@ -21,11 +21,11 @@ import java.io.IOException;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtSecurity jwtSecurity;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public JwtFilter(JwtSecurity jwtSecurity, UserService userService) {
+    public JwtFilter(JwtSecurity jwtSecurity, UserRepository userRepository) {
         this.jwtSecurity = jwtSecurity;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        UserEntity user = userService.getUserByUsername(username);
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
         if (user == null) {
             log.info("Missing user with username provided in bearer token");
             chain.doFilter(request, response);

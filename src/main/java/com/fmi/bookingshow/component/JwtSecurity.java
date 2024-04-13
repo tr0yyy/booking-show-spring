@@ -22,7 +22,13 @@ public class JwtSecurity implements Serializable {
     private static final long serialVersionUID = 2628501608718103532L;
     private static final long jwtTokenValidity = 12 * 60 * 60;
     private final String secret = System.getenv("JWT_SECRET");
-    private final SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    private final SecretKey key = Keys.hmacShaKeyFor(
+            Decoders.BASE64.decode(
+                    secret != null
+                            ? secret
+                            : "dG9wc2VjcmV0cGFzc3dvcmRyZXF1aXJlZHdpdGhoczI1Nmlzc29zZWN1cmVhbmRzb3Bvd2VyZnVsZm9ydGhpc2tpbmRvZnByb2plY3QhQCM0UVdFciFAIzRRV0Vy"
+            )
+    );
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
