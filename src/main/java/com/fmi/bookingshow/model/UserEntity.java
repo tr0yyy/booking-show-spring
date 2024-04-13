@@ -38,6 +38,14 @@ public class UserEntity implements UserDetails {
     public UserEntity() {
     }
 
+    public UserEntity(String username, String password, String email, String role, UserSpecificsEntity userSpecifics) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.userSpecifics = userSpecifics;
+    }
+
     public UserEntity(String username, String password, String email, String role) {
         this.username = username;
         this.password = password;

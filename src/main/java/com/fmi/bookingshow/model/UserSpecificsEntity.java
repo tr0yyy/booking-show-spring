@@ -15,7 +15,7 @@ import java.util.Date;
 public class UserSpecificsEntity {
     @Id
     @GeneratedValue
-    private Long userId;
+    private Long userSpecificsId;
     private Date birthday;
     private String bio;
     private String preferences;

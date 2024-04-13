@@ -15,10 +15,19 @@ public class TicketEntity {
     private long ticketId;
     @ManyToOne
     private UserEntity user;
-    @ManyToOne
+    @OneToOne
     private SeatEntity seat;
     @ManyToOne
     private EventEntity event;
     private Date purchaseDate;
-    private Float price;
+
+    public TicketEntity(UserEntity user, SeatEntity seat, EventEntity event, Date purchaseDate) {
+        this.user = user;
+        this.seat = seat;
+        this.event = event;
+        this.purchaseDate = purchaseDate;
+    }
+
+    public TicketEntity() {
+    }
 }

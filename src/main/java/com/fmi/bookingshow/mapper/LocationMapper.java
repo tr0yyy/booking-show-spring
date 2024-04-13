@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class LocationMapper {
     public LocationEntity importLocationDtoToLocationEntity(ImportLocationDto importLocationDto) {
-        return new LocationEntity(importLocationDto.name, importLocationDto.address);
+        return new LocationEntity(importLocationDto.name, importLocationDto.address, importLocationDto.availableRows, importLocationDto.availableSeatsPerRow);
     }
 
     public OutputLocationDto locationEntityToOutputLocationDto(LocationEntity location) {
-        return new OutputLocationDto(location.getLocationId(), location.getName(), location.getAddress());
+        return new OutputLocationDto(location.getLocationId(), location.getName(), location.getAddress(), location.getAvailableRows(), location.getAvailableSeatsPerRow());
     }
 }
