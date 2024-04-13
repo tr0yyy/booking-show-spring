@@ -33,7 +33,7 @@ public class UserService {
         }
         UserEntity userToBeRegistered = new UserEntity(
                 userEntity.getUsername(),
-                userEntity.getPassword(),
+                passwordEncoder.encode(userEntity.getPassword()),
                 userEntity.getEmail(),
                 Role.USER
         );
