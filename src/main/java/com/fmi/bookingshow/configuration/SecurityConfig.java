@@ -5,6 +5,8 @@ import com.fmi.bookingshow.constants.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authorization.AuthorityAuthorizationManager;
+import org.springframework.security.authorization.AuthorizationManagers;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,7 +43,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(AUTH_WHITELIST).permitAll()
-                .requestMatchers("/core/**").hasAuthority(Role.USER)
+                .requestMatchers("/core/**").hasAnyAuthority(Role.USER, Role.ADMIN)
                 .requestMatchers("/admin/**").hasAuthority(Role.ADMIN));
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

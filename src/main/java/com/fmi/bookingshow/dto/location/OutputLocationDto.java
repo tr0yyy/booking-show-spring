@@ -6,8 +6,8 @@ public class OutputLocationDto extends ImportLocationDto {
     public OutputLocationDto() {
     }
 
-    public OutputLocationDto(Long locationId, String name, String address) {
-        super(name, address);
+    public OutputLocationDto(Long locationId, String name, String address, Integer availableRows, Integer availableSeatsPerRow) {
+        super(name, address, availableRows, availableSeatsPerRow);
         this.locationId = locationId;
     }
 }

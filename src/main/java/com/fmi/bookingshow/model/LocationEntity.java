@@ -15,10 +15,14 @@ public class LocationEntity {
     private Long locationId;
     private String name;
     private String address;
+    private Integer availableRows;
+    private Integer availableSeatsPerRow;
 
-    public LocationEntity(String name, String address) {
+    public LocationEntity(String name, String address, Integer availableRows, Integer availableSeatsPerRow) {
         this.name = name;
         this.address = address;
+        this.availableRows = availableRows;
+        this.availableSeatsPerRow = availableSeatsPerRow;
     }
 
     public LocationEntity() {

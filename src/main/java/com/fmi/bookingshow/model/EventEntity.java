@@ -23,4 +23,5 @@ public class EventEntity {
     private List<TicketEntity> tickets;
     @ManyToOne
     private LocationEntity location;
+    private Float ticketPrice;
 }

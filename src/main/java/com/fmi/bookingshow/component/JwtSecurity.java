@@ -20,7 +20,7 @@ import java.util.function.Function;
 public class JwtSecurity implements Serializable {
     @Serial
     private static final long serialVersionUID = 2628501608718103532L;
-    private static final long jwtTokenValidity = 12 * 60 * 60;
+    private static final long jwtTokenValidity = 12 * 60 * 60 * 1000;
     private final String secret = System.getenv("JWT_SECRET");
     private final SecretKey key = Keys.hmacShaKeyFor(
             Decoders.BASE64.decode(
