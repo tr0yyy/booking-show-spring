@@ -6,4 +6,5 @@ public interface ErrorMessage {
     String REGISTRATION_FAILED = "Registration failed";
     String LOGIN_FAILED = "Login failed";
     String TICKET_ORDER_FAILED = "Ticket order failed";
+    String EVENT_NOT_FOUND = "Event not found";
 }

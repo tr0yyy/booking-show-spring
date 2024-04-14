@@ -4,6 +4,7 @@ import com.fmi.bookingshow.component.ApiFactory;
 import com.fmi.bookingshow.dto.response.ResponseDto;
 import com.fmi.bookingshow.dto.ticket.TicketOrderDto;
 import com.fmi.bookingshow.dto.ticket.TicketOutputDto;
+import com.fmi.bookingshow.exceptions.EventNotFoundException;
 import com.fmi.bookingshow.exceptions.TicketOrderException;
 import com.fmi.bookingshow.mapper.TicketMapper;
 import com.fmi.bookingshow.model.TicketEntity;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,5 +38,13 @@ public class TicketController {
             TicketEntity ticketEntity = ticketService.orderTicketForEvent(currentUser.getUserId(), ticketOrderDto.eventId, ticketOrderDto.seatRow, ticketOrderDto.seatNumber);
             return ticketMapper.ticketEntityToTicketOutput(ticketEntity);
         }, TicketOrderException.class);
+    }
+
+    @PostMapping("/admin/ticket/archive")
+    public ResponseEntity<ResponseDto<String>> archiveTickets(@RequestParam Long eventId) {
+        return apiFactory.create(() -> String.format("Archived %d tickets for event %d",
+                ticketService.archiveTicketsForEvent(eventId),
+                eventId), EventNotFoundException.class
+        );
     }
 }
