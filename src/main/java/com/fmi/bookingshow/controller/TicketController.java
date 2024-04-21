@@ -1,7 +1,5 @@
 package com.fmi.bookingshow.controller;
 
-import com.fmi.bookingshow.component.ApiFactory;
-import com.fmi.bookingshow.dto.response.ResponseDto;
 import com.fmi.bookingshow.dto.ticket.TicketOrderDto;
 import com.fmi.bookingshow.dto.ticket.TicketOutputDto;
 import com.fmi.bookingshow.exceptions.EventNotFoundException;
@@ -11,40 +9,36 @@ import com.fmi.bookingshow.model.TicketEntity;
 import com.fmi.bookingshow.model.UserEntity;
 import com.fmi.bookingshow.service.TicketService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.NoSuchAlgorithmException;
+
 @RestController
 @Slf4j
 public class TicketController {
     private final TicketService ticketService;
     private final TicketMapper ticketMapper;
-    private final ApiFactory apiFactory;
 
-    public TicketController(TicketService ticketService, TicketMapper ticketMapper, ApiFactory apiFactory) {
+    public TicketController(TicketService ticketService, TicketMapper ticketMapper) {
         this.ticketService = ticketService;
         this.ticketMapper = ticketMapper;
-        this.apiFactory = apiFactory;
     }
 
     @PostMapping("/core/ticket/order")
-    public ResponseEntity<ResponseDto<TicketOutputDto>> orderTicket(Authentication authentication, @RequestBody TicketOrderDto ticketOrderDto) {
-        return apiFactory.create(() -> {
-            UserEntity currentUser = (UserEntity) authentication.getPrincipal();
-            TicketEntity ticketEntity = ticketService.orderTicketForEvent(currentUser.getUserId(), ticketOrderDto.eventId, ticketOrderDto.seatRow, ticketOrderDto.seatNumber);
-            return ticketMapper.ticketEntityToTicketOutput(ticketEntity);
-        }, TicketOrderException.class);
+    public TicketOutputDto orderTicket(Authentication authentication, @RequestBody TicketOrderDto ticketOrderDto) throws TicketOrderException {
+        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+        TicketEntity ticketEntity = ticketService.orderTicketForEvent(currentUser.getUserId(), ticketOrderDto.eventId, ticketOrderDto.seatRow, ticketOrderDto.seatNumber);
+        return ticketMapper.ticketEntityToTicketOutput(ticketEntity);
     }
 
     @PostMapping("/admin/ticket/archive")
-    public ResponseEntity<ResponseDto<String>> archiveTickets(@RequestParam Long eventId) {
-        return apiFactory.create(() -> String.format("Archived %d tickets for event %d",
+    public String archiveTickets(@RequestParam Long eventId) throws EventNotFoundException, NoSuchAlgorithmException {
+        return String.format("Archived %d tickets for event %d",
                 ticketService.archiveTicketsForEvent(eventId),
-                eventId), EventNotFoundException.class
-        );
+                eventId);
     }
 }

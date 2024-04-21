@@ -9,4 +9,12 @@ public class StringUtils {
                 .reduce((s1, s2) -> s1 + "\n" + s2)
                 .orElse("");
     }
+
+    public static <T> String getFirstNLinesOfStacktrace(T[] elements, int lines) {
+        return Arrays.stream(elements)
+                .map(T::toString)
+                .limit(lines)
+                .reduce((s1, s2) -> s1 + "\n" + s2)
+                .orElse("");
+    }
 }
