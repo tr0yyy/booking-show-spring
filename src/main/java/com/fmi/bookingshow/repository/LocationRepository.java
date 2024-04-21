@@ -11,7 +11,4 @@ import java.util.Optional;
 @Repository
 public interface LocationRepository extends JpaRepository<LocationEntity, Long> {
     Optional<LocationEntity> findByName(String name);
-
-    @Query(value="select * from location", nativeQuery = true)
-    List<LocationEntity> getAll();
 }

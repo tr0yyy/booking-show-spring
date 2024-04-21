@@ -23,7 +23,7 @@ public class LocationService {
     }
 
     public List<LocationEntity> getLocations() {
-        return locationRepository.getAll();
+        return locationRepository.findAll();
     }
 
 }

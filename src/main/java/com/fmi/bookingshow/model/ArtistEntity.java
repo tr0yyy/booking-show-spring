@@ -20,4 +20,12 @@ public class ArtistEntity {
     joinColumns = @JoinColumn(name="artistId", referencedColumnName = "artistId"),
     inverseJoinColumns = @JoinColumn(name="eventId", referencedColumnName = "eventId"))
     private List<EventEntity> events;
+
+    public ArtistEntity(String name, String bio) {
+        this.name = name;
+        this.bio = bio;
+    }
+
+    public ArtistEntity() {
+    }
 }

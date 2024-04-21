@@ -1,18 +1,17 @@
 package com.fmi.bookingshow.service;
 
 import com.fmi.bookingshow.exceptions.EventNotFoundException;
+import com.fmi.bookingshow.exceptions.OperationNotPermittedException;
 import com.fmi.bookingshow.exceptions.TicketOrderException;
 import com.fmi.bookingshow.model.*;
 import com.fmi.bookingshow.repository.*;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TicketService {
@@ -84,10 +83,14 @@ public class TicketService {
         );
     }
 
-    public int archiveTicketsForEvent(long eventId) throws EventNotFoundException, NoSuchAlgorithmException {
+    public int archiveTicketsForEvent(long eventId) throws EventNotFoundException, NoSuchAlgorithmException, OperationNotPermittedException {
         EventEntity event = eventRepository.findByEventId(eventId).orElse(null);
         if (event == null) {
             throw new EventNotFoundException();
+        }
+
+        if (event.getDateTime().getTime() > new Date().getTime()) {
+            throw new OperationNotPermittedException("Event is still active");
         }
 
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");

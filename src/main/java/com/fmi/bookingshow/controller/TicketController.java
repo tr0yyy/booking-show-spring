@@ -1,8 +1,10 @@
 package com.fmi.bookingshow.controller;
 
+import com.fmi.bookingshow.dto.response.MessageDto;
 import com.fmi.bookingshow.dto.ticket.TicketOrderDto;
 import com.fmi.bookingshow.dto.ticket.TicketOutputDto;
 import com.fmi.bookingshow.exceptions.EventNotFoundException;
+import com.fmi.bookingshow.exceptions.OperationNotPermittedException;
 import com.fmi.bookingshow.exceptions.TicketOrderException;
 import com.fmi.bookingshow.mapper.TicketMapper;
 import com.fmi.bookingshow.model.TicketEntity;
@@ -36,9 +38,9 @@ public class TicketController {
     }
 
     @PostMapping("/admin/ticket/archive")
-    public String archiveTickets(@RequestParam Long eventId) throws EventNotFoundException, NoSuchAlgorithmException {
-        return String.format("Archived %d tickets for event %d",
+    public MessageDto archiveTickets(@RequestParam Long eventId) throws EventNotFoundException, NoSuchAlgorithmException, OperationNotPermittedException {
+        return new MessageDto(String.format("Archived %d tickets for event %d",
                 ticketService.archiveTicketsForEvent(eventId),
-                eventId);
+                eventId));
     }
 }

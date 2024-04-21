@@ -8,4 +8,7 @@ public interface ErrorMessage {
     String LOGIN_FAILED = "Login failed";
     String TICKET_ORDER_FAILED = "Ticket order failed";
     String EVENT_NOT_FOUND = "Event not found";
+    String ARTIST_NOT_FOUND = "Artist not found";
+    String LOCATION_NOT_FOUND = "Location not found";
+    String OPERATION_NOT_PERMITTED = "Operation not permitted";
 }
