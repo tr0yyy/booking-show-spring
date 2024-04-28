@@ -1,4 +1,4 @@
-package com.fmi.bookingshow.configuration;
+package com.fmi.bookingshow.configuration.tests;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
-@Profile("Test")
+@Profile("H2-Testing")
 public class TestEnvironmentConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {

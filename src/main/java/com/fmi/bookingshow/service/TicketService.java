@@ -53,8 +53,8 @@ public class TicketService {
             throw new TicketOrderException("Invalid seat data provided");
         }
 
-        TicketEntity ticketWithSameSeat = event.getTickets()
-                .stream()
+        TicketEntity ticketWithSameSeat = event.getTickets() == null ? null
+                : event.getTickets().stream()
                 .filter(ticket ->
                         ticket.getSeat().getSeatNumber() == seatNumber
                                 && ticket.getSeat().getSeatRowNumber() == seatRow
