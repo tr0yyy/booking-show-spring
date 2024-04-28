@@ -24,4 +24,26 @@ public class EventEntity {
     @ManyToOne
     private LocationEntity location;
     private Float ticketPrice;
+
+    public EventEntity() {
+    }
+
+    public EventEntity(Long eventId, String title, Date dateTime, String description, List<ArtistEntity> artists, LocationEntity location, Float ticketPrice) {
+        this.eventId = eventId;
+        this.title = title;
+        this.dateTime = dateTime;
+        this.description = description;
+        this.artists = artists;
+        this.location = location;
+        this.ticketPrice = ticketPrice;
+    }
+
+    public EventEntity(String title, Date dateTime, String description, List<ArtistEntity> artists, LocationEntity location, Float ticketPrice) {
+        this.title = title;
+        this.dateTime = dateTime;
+        this.description = description;
+        this.artists = artists;
+        this.location = location;
+        this.ticketPrice = ticketPrice;
+    }
 }

@@ -1,5 +1,7 @@
 package com.fmi.bookingshow.controller;
 
+import com.fmi.bookingshow.dto.response.MessageDto;
+import com.fmi.bookingshow.dto.response.ResponseDto;
 import com.fmi.bookingshow.dto.user.OutputLoginDto;
 import com.fmi.bookingshow.dto.user.UserDto;
 import com.fmi.bookingshow.exceptions.LoginFailedException;
@@ -26,10 +28,10 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public String registerAccount(@RequestBody UserDto userDto) throws RegistrationFailedException {
+    public MessageDto registerAccount(@RequestBody UserDto userDto) throws RegistrationFailedException {
         UserEntity userEntity = userMapper.userDtoToUserEntity(userDto);
         userService.register(userEntity);
-        return "Registered successfully";
+        return new MessageDto("User registered successfully");
     }
 
     @PostMapping("/auth/login")
