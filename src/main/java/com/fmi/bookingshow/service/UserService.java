@@ -54,6 +54,6 @@ public class UserService {
         if (!passwordEncoder.matches(userEntity.getPassword(), userFromDatabase.getPassword())) {
             throw new LoginFailedException("Password authentication failed");
         }
-        return Collections.singletonMap(userFromDatabase, jwtSecurity.generateToken(userEntity));
+        return Collections.singletonMap(userFromDatabase, jwtSecurity.generateToken(userFromDatabase));
     }
 }

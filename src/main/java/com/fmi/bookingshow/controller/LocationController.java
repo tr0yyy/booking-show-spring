@@ -25,7 +25,7 @@ public class LocationController {
         this.locationMapper = locationMapper;
     }
 
-    @PostMapping("/admin/location/insert")
+    @PostMapping("/admin/location/import")
     public OutputLocationDto insertLocation(@RequestBody ImportLocationDto locationDto) throws DuplicateEntryException {
         LocationEntity location = locationMapper.importLocationDtoToLocationEntity(locationDto);
         location = locationService.addLocation(location);

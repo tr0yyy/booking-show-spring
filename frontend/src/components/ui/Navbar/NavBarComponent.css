@@ -1,0 +1,24 @@
+.navbar-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.nav-item-group {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center; /* Center by default */
+}
+
+.nav-item-group.left {
+    justify-content: flex-start; /* Aligns items to the left */
+}
+
+.nav-item-group.right {
+    justify-content: flex-end; /* Aligns items to the right */
+}
+
+.nav-item {
+    padding: 0 10px; /* Adds space between nav items */
+}
