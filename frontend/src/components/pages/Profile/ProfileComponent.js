@@ -27,15 +27,17 @@ export const ProfileComponent = () => {
         const endpoint = constructApiPath(Models.userspecifics, Operations.get, Privileges.core);
         try {
             const {dateOfBirth, bio, preferences} = await dataProvider.fetchData(endpoint);
-            setDbDateOfBirth(dateOfBirth.split(' ')[0]);
+            if (dateOfBirth) {
+                setDbDateOfBirth(dateOfBirth.split(' ')[0]);
+                setFormDateOfBirth(dateOfBirth.split(' ')[0]);
+            }
             setDbBio(bio);
             setDbPreferences(preferences);
-            setFormDateOfBirth(dateOfBirth.split(' ')[0]);
             setFormBio(bio);
             setFormPreferences(preferences);
             setError('');
         } catch (e) {
-            setError(e.message.data.error ?? e.message);
+            setError(e.message.data?.error ?? e.message);
         }
         setLoading(false)
     }, [dataProvider]);

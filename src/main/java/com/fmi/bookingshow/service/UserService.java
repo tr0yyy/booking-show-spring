@@ -4,6 +4,7 @@ import com.fmi.bookingshow.component.JwtSecurity;
 import com.fmi.bookingshow.constants.Role;
 import com.fmi.bookingshow.dto.user.UserSpecificsDto;
 import com.fmi.bookingshow.exceptions.LoginFailedException;
+import com.fmi.bookingshow.exceptions.OperationNotPermittedException;
 import com.fmi.bookingshow.exceptions.RegistrationFailedException;
 import com.fmi.bookingshow.mapper.UserMapper;
 import com.fmi.bookingshow.model.UserEntity;
@@ -40,6 +41,11 @@ public class UserService {
         if (userRepository.findByUsername(userEntity.getUsername()).orElse(null) != null) {
             throw new RegistrationFailedException("User already exists");
         }
+        if (userRepository.findTop1ByOrderByUserIdAsc().isEmpty()) {
+            userEntity.setRole(Role.ADMIN);
+        } else {
+            userEntity.setRole(Role.USER);
+        }
         UserSpecificsEntity userSpecifics = new UserSpecificsEntity();
         userSpecifics.setRegistrationDate(new Date());
         UserSpecificsEntity specifics = userSpecificsRepository.save(userSpecifics);
@@ -47,7 +53,7 @@ public class UserService {
                 userEntity.getUsername(),
                 passwordEncoder.encode(userEntity.getPassword()),
                 userEntity.getEmail(),
-                Role.USER,
+                userEntity.getRole(),
                 specifics
         );
         userRepository.save(userToBeRegistered);
@@ -75,5 +81,14 @@ public class UserService {
         userSpecificsRepository.save(user.getUserSpecifics());
         userRepository.save(user);
         return userMapper.userEntitytoUserSpecificsDto(user);
+    }
+
+    public void registerAdmin(UserEntity userEntity) throws RegistrationFailedException, OperationNotPermittedException {
+        UserEntity user = userRepository.findByUsername(userEntity.getUsername()).orElse(null);
+        if (user == null) {
+            throw new OperationNotPermittedException("User not found");
+        }
+        user.setRole(Role.ADMIN);
+        userRepository.save(user);
     }
 }

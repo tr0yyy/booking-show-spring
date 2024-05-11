@@ -36,7 +36,7 @@ public class UserMapper {
                 userEntity.getUsername(),
                 userEntity.getEmail(),
                 userEntity.getRole(),
-                userEntity.getUserSpecifics().getBirthday().toString(),
+                userEntity.getUserSpecifics().getBirthday() == null ? null : userEntity.getUserSpecifics().getBirthday().toString(),
                 userEntity.getUserSpecifics().getBio(),
                 userEntity.getUserSpecifics().getPreferences(),
                 userEntity.getUserSpecifics().getRegistrationDate().toString()
