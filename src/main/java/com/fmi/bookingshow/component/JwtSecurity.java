@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
+@Slf4j
 public class JwtSecurity implements Serializable {
     @Serial
     private static final long serialVersionUID = 2628501608718103532L;
@@ -54,6 +56,10 @@ public class JwtSecurity implements Serializable {
 
     public String generateToken(UserEntity userEntity) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", userEntity.getRole());
+        claims.put("userId", userEntity.getUserId());
+        log.info("Generating token for user: " + userEntity.getUsername());
+        log.info("Using claims: " + claims);
         return doGenerateToken(claims, userEntity.getUsername());
     }
 

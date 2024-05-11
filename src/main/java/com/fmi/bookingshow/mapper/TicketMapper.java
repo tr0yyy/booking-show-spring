@@ -12,7 +12,8 @@ public class TicketMapper {
                 ticketEntity.getSeat().getSeatRowNumber(),
                 ticketEntity.getSeat().getSeatNumber(),
                 ticketEntity.getTicketId(),
-                ticketEntity.getPurchaseDate()
+                ticketEntity.getPurchaseDate(),
+                ticketEntity.getUser().getUserId()
         );
     }
 }

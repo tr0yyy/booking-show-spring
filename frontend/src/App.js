@@ -1,0 +1,16 @@
+import './App.css';
+import {Component} from "react";
+import {RouterComponent} from "./components/RouterComponent";
+import {ContextFactoryGenerator} from "./modules/Context/ContextFactory";
+
+class App extends Component {
+  render() {
+    return (
+      <ContextFactoryGenerator baseUrl="http://localhost:8080">
+        <RouterComponent/>
+      </ContextFactoryGenerator>
+    )
+  }
+}
+
+export default App;
