@@ -39,6 +39,16 @@ export default class SecurityManager {
         return decodedToken.userId;
     }
 
+    getUsername() {
+        const token = Cookies.get('token');
+        if (token === undefined || isExpired(token)) {
+            return null;
+        }
+        const decodedToken = decodeToken(token);
+        return decodedToken.username;
+    }
+
+
     clearToken() {
         Cookies.remove("token");
     }

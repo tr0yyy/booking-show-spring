@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, Alert, ModalFooter} from 'reactstrap';
+import {Modal, Button, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 
 const FormModalComponent = ({ show, handleSubmit, handleClose, formType, FormContent = null }) => {
     const formTitleSplit = formType.replace(/([A-Z])/g, ' $1').trim()

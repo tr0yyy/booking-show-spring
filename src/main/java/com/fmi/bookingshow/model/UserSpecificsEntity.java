@@ -22,4 +22,14 @@ public class UserSpecificsEntity {
     private Date registrationDate;
     @OneToOne(mappedBy = "userSpecifics")
     private UserEntity user;
+
+    public UserSpecificsEntity(Date birthday, String bio, String preferences) {
+        this.birthday = birthday;
+        this.bio = bio;
+        this.preferences = preferences;
+    }
+
+    public UserSpecificsEntity() {
+
+    }
 }

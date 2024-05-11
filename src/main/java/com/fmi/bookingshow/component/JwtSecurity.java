@@ -58,6 +58,7 @@ public class JwtSecurity implements Serializable {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", userEntity.getRole());
         claims.put("userId", userEntity.getUserId());
+        claims.put("username", userEntity.getUsername());
         log.info("Generating token for user: " + userEntity.getUsername());
         log.info("Using claims: " + claims);
         return doGenerateToken(claims, userEntity.getUsername());

@@ -8,11 +8,13 @@ import com.fmi.bookingshow.model.EventEntity;
 import com.fmi.bookingshow.repository.ArtistRepository;
 import com.fmi.bookingshow.repository.EventRepository;
 import com.fmi.bookingshow.repository.LocationRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class EventService {
     private final EventRepository eventRepository;
     private final ArtistRepository artistRepository;
@@ -45,7 +47,14 @@ public class EventService {
                 locationRepository.findById(event.getLocation().getLocationId()).orElse(null),
                 event.getTicketPrice()
         );
-        return eventRepository.save(eventEntityToSave);
+        EventEntity savedEntity = eventRepository.save(eventEntityToSave);
+
+        for (ArtistEntity artistEntity: eventEntityToSave.getArtists()) {
+            artistEntity.getEvents().add(savedEntity);
+            artistRepository.save(artistEntity);
+        }
+
+        return savedEntity;
     }
 
     public List<EventEntity> getAllEvents() {

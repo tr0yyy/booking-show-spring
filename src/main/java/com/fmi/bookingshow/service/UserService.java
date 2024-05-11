@@ -2,12 +2,15 @@ package com.fmi.bookingshow.service;
 
 import com.fmi.bookingshow.component.JwtSecurity;
 import com.fmi.bookingshow.constants.Role;
+import com.fmi.bookingshow.dto.user.UserSpecificsDto;
 import com.fmi.bookingshow.exceptions.LoginFailedException;
 import com.fmi.bookingshow.exceptions.RegistrationFailedException;
+import com.fmi.bookingshow.mapper.UserMapper;
 import com.fmi.bookingshow.model.UserEntity;
 import com.fmi.bookingshow.model.UserSpecificsEntity;
 import com.fmi.bookingshow.repository.UserRepository;
 import com.fmi.bookingshow.repository.UserSpecificsRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +22,14 @@ public class UserService {
     private final UserSpecificsRepository userSpecificsRepository;
     private final JwtSecurity jwtSecurity;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, UserSpecificsRepository userSpecificsRepository, JwtSecurity jwtSecurity, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserSpecificsRepository userSpecificsRepository, JwtSecurity jwtSecurity, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.jwtSecurity = jwtSecurity;
         this.passwordEncoder = passwordEncoder;
         this.userSpecificsRepository = userSpecificsRepository;
+        this.userMapper = userMapper;
     }
 
     public UserEntity getUserByUsername(String username) {
@@ -35,7 +40,9 @@ public class UserService {
         if (userRepository.findByUsername(userEntity.getUsername()).orElse(null) != null) {
             throw new RegistrationFailedException("User already exists");
         }
-        UserSpecificsEntity specifics = userSpecificsRepository.save(new UserSpecificsEntity());
+        UserSpecificsEntity userSpecifics = new UserSpecificsEntity();
+        userSpecifics.setRegistrationDate(new Date());
+        UserSpecificsEntity specifics = userSpecificsRepository.save(userSpecifics);
         UserEntity userToBeRegistered = new UserEntity(
                 userEntity.getUsername(),
                 passwordEncoder.encode(userEntity.getPassword()),
@@ -55,5 +62,18 @@ public class UserService {
             throw new LoginFailedException("Password authentication failed");
         }
         return Collections.singletonMap(userFromDatabase, jwtSecurity.generateToken(userFromDatabase));
+    }
+
+    public UserSpecificsDto getUserSpecifics(UserEntity user) {
+        return userMapper.userEntitytoUserSpecificsDto(user);
+    }
+
+    public UserSpecificsDto updateUserSpecifics(UserEntity user, UserSpecificsEntity userSpecifics) {
+        user.getUserSpecifics().setBirthday(userSpecifics.getBirthday());
+        user.getUserSpecifics().setBio(userSpecifics.getBio());
+        user.getUserSpecifics().setPreferences(userSpecifics.getPreferences());
+        userSpecificsRepository.save(user.getUserSpecifics());
+        userRepository.save(user);
+        return userMapper.userEntitytoUserSpecificsDto(user);
     }
 }

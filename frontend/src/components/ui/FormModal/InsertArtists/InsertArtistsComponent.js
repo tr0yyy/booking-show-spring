@@ -30,7 +30,7 @@ export const InsertArtistsComponent = ({ formData, onFormChange, error }) => {
                 />
             </FormGroup>
             <FormGroup>
-                <Label for="name">Bio</Label>
+                <Label for="bio">Bio</Label>
                 <Input
                     type="text"
                     id="bio"
