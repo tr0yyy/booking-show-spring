@@ -56,8 +56,13 @@ export const ProfileComponent = () => {
     }
 
     const handleBioChange = (e) => {
-        setFormBio(e.target.value);
-        if (e.target.value !== dbBio) {
+        const valueFormatted = e.target.value.trim().length > 0 ? e.target.value : '';
+        setFormBio(valueFormatted);
+        if (valueFormatted === '' && dbBio === null) {
+            setDetectChanges(false);
+            return;
+        }
+        if (valueFormatted !== dbBio) {
             setDetectChanges(true);
             return;
         }
@@ -65,8 +70,13 @@ export const ProfileComponent = () => {
     }
 
     const handlePreferencesChange = (e) => {
-        setFormPreferences(e.target.value);
-        if (e.target.value !== dbPreferences) {
+        const valueFormatted = e.target.value.trim().length > 0 ? e.target.value : '';
+        setFormPreferences(valueFormatted);
+        if (valueFormatted === '' && dbPreferences === null) {
+            setDetectChanges(false);
+            return;
+        }
+        if (valueFormatted !== dbPreferences) {
             setDetectChanges(true);
             return;
         }

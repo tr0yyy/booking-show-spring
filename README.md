@@ -11,5 +11,7 @@ Pe o baza de date curata, este necesara rularea scriptului `ci/mysql/init.sql` p
 
 Primul utilizator creat pe platforma va avea by default rolul de administrator, restul vor fi creati cu privilegii de user.
 
+In `api-docs.json` se afla documentatia API-urilor serverului de backend.
+
 # Database schema
 ![Database schema](./Booking_Tickets.jpg)

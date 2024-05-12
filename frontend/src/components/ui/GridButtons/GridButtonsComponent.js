@@ -23,6 +23,11 @@ const GridButtonsComponent = () => {
   }, [formData]);
 
   const handleFormChange = (data) => {
+      Object.entries(data).forEach(([key, value]) => {
+          if (typeof value === 'string') {
+              data[key] = value.trim().length === 0 ? '' : value;
+          }
+      });
       setFormData(data);
   };
 
@@ -65,7 +70,9 @@ const GridButtonsComponent = () => {
           setError('');
           notificationManager.showNotification('Form submitted successfully');
       } catch (e) {
-          setError(e.message.data.error);
+          console.log(e);
+          setError(e.response.data.error);
+          return;
       }
       closeModal();
   };
@@ -78,6 +85,7 @@ const GridButtonsComponent = () => {
   }
 
   const openModal = (formType) => {
+      setError('');
     setActiveForm(formType);
     switch (formType) {
       case 'insertEvent':

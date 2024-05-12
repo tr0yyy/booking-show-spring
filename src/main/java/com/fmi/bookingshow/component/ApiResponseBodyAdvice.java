@@ -27,14 +27,14 @@ public class ApiResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                                       ServerHttpRequest request, ServerHttpResponse response) {
         List<String> responseDtoPaths = List.of(Apis.AUTH, Apis.CORE, Apis.ADMIN);
         log.info("Writing to %s".formatted(request.getURI().getPath()));
-        for(String path : responseDtoPaths) {;
-            if (!request.getURI().getPath().startsWith(path)) {
-                return body;
+        for(String path : responseDtoPaths) {
+            if (request.getURI().getPath().startsWith(path)) {
+                if (body instanceof ResponseDto<?>) {
+                    return body;
+                }
+                return new ResponseDto<>(true, body, null);
             }
         }
-        if (body instanceof ResponseDto<?>) {
-            return body;
-        }
-        return new ResponseDto<>(true, body, null);
+        return body;
     }
 }
