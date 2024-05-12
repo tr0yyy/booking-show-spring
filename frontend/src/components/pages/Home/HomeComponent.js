@@ -44,7 +44,7 @@ const Modal = ({ isOpen, onClose, event }) => {
                 <Form onSubmit={handleSubmit}>
                     <Input type="text" placeholder="Seat Row" value={seatRow} onChange={(e) => setSeatRow(e.target.value)} required />
                     <Input type="text" placeholder="Seat Number" value={seatNumber} onChange={(e) => setSeatNumber(e.target.value)} required />
-                    <Button type="submit">Order Ticket</Button>
+                    <Button color='primary' type="submit">Order Ticket</Button>
                 </Form>
                 <Button  onClick={onClose} style={{ marginTop: '10px' }}>Close</Button>
             </div>
@@ -56,16 +56,16 @@ const Modal = ({ isOpen, onClose, event }) => {
 export const HomeComponent = () => {
     const dataProvider = useAppContext().getDataProvider();
     const securityManager = useAppContext().getSecurityManager();
+    const notificationManager = useAppContext().getNotificationManager();
 
     const [events, setEvents] = useState([]);
     const [locations, setLocations] = useState([]);
-    const [artists, setArtists] = useState([]);
+    const [, setArtists] = useState([]);
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [eventsPerPage, setEventsPerPage] = useState(10);
-
+    const [eventsPerPage,] = useState(4);
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -73,17 +73,20 @@ export const HomeComponent = () => {
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
+    const [currentEvents, setCurrentEvents] = useState([]);
+
     const handleOpenModal = (event) => {
         setSelectedEvent(event);
         setModalIsOpen(true);
     };
     const handleCloseModal = () => {
         setModalIsOpen(false);
+        setEvents([]);
+        setLoading(true);
     };
 
     const indexOfLastEvent = currentPage * eventsPerPage;
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
-    const currentEvents = Object.values(events).slice(indexOfFirstEvent, indexOfLastEvent);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -118,6 +121,41 @@ export const HomeComponent = () => {
         return tickets[eventId].find(ticket => ticket.userId === securityManager.getUserId()) !== undefined;
     };
 
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+    const requestSort = (key) => {
+        console.log('requesting sort');
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+        sortArray(key, direction);
+    };
+
+    const sortArray = (key, direction) => {
+        setCurrentEvents(currentEvents => {
+            return currentEvents.sort((a, b) => {
+                const aValue = key === 'locationName'
+                    ? searchInArrayByKeyAndGetField(locations, 'locationId', a.locationId, 'name')
+                    : key === 'artists'
+                        ? a.artistDtos.map(artist => artist.name).join(',')
+                        : a[key];
+                const bValue = key === 'locationName'
+                    ? searchInArrayByKeyAndGetField(locations, 'locationId', b.locationId, 'name')
+                    : key === 'artists'
+                        ? b.artistDtos.map(artist => artist.name).join(',')
+                        : b[key];
+                if (aValue < bValue) {
+                    return direction === 'ascending' ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        });
+    };
+
     useEffect(() => {
         async function fetchData() {
             try {
@@ -141,6 +179,10 @@ export const HomeComponent = () => {
                 console.log(`Fetched artists: ${JSON.stringify(fetchedArtists)}`);
                 console.log(`Fetched tickets: ${JSON.stringify(fetchedTickets)}`);
 
+                setCurrentEvents(Object.values(fetchedEvents));
+
+                notificationManager.showNotification('Data fetched successfully');
+
             } catch (error) {
                 console.error(`Error occurred while fetching data ${error}`);
             } finally {
@@ -150,7 +192,7 @@ export const HomeComponent = () => {
         if (events.length === 0) {
             fetchData();
         }
-    }, [events.length, dataProvider]);
+    }, [events.length, dataProvider, notificationManager]);
 
     if (loading) {
         return (
@@ -161,32 +203,30 @@ export const HomeComponent = () => {
     return (
         <div style={{margin: '0 auto', maxWidth: '90%', padding: '20px'}}>
             <h1>Events List</h1>
-            <table style={{width: '100%', borderCollapse: 'collapse'}}>
+            <table style={{width: '100%', borderCollapse: 'collapse', textAlign: 'center'}}>
                 <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Date and Time</th>
-                    <th>Description</th>
-                    <th>Location Name</th>
-                    <th>Artists</th>
-                    <th>Ticket Price</th>
+                    <th onClick={() => requestSort('title')}>Title</th>
+                    <th onClick={() => requestSort('dateTime')}>Date and Time</th>
+                    <th onClick={() => requestSort('description')}>Description</th>
+                    <th onClick={() => requestSort('locationName')}>Location Name</th>
+                    <th onClick={() => requestSort('artists')}>Artists</th>
+                    <th onClick={() => requestSort('ticketPrice')}>Ticket Price</th>
                     <th>Order</th>
                 </tr>
                 </thead>
                 <tbody>
-                {currentEvents.map((event) => (
+                {currentEvents.slice(indexOfFirstEvent, indexOfLastEvent).map((event) => (
                     <tr key={event.eventId} id={`event-${event.eventId}`}>
-                        <td>{event.title}</td>
-                        <td>{event.dateTime}</td>
-                        <td>{event.description}</td>
-                        <td>{searchInArrayByKeyAndGetField(locations, 'locationId', event.locationId, 'name')}</td>
-                        <td>{artists[event.eventId] === undefined
-                            ? artists[event.eventId].map(artist => artist.name).join(', ')
-                            : 'No artists'}</td>
-                        <td>${event.ticketPrice}</td>
-                        <td>
-                            <div id={`btn-event-${event.eventId}`}>
-                                <Button disabled={shouldDisableOrderForEvent(event.eventId)} onClick={() => handleOpenModal(event)}>Order Ticket</Button>
+                        <td style={{"text-align":'center'}}>{event.title}</td>
+                        <td style={{"text-align":'center'}}>{event.dateTime}</td>
+                        <td style={{"text-align":'center'}}>{event.description}</td>
+                        <td style={{"text-align":'center'}}>{searchInArrayByKeyAndGetField(locations, 'locationId', event.locationId, 'name')}</td>
+                        <td style={{"text-align":'center'}}>{event.artistDtos.map(artist => artist.name).join(',')}</td>
+                        <td style={{"text-align":'center'}}>${event.ticketPrice}</td>
+                        <td id={`btn-event-${event.eventId}`} style={{"text-align":'center'}}>
+                            <div>
+                                <Button color={'primary'} disabled={shouldDisableOrderForEvent(event.eventId)} onClick={() => handleOpenModal(event)}>Order Ticket</Button>
                                 {
                                     shouldDisableOrderForEvent(event.eventId) &&
                                     <Tooltip
@@ -207,10 +247,10 @@ export const HomeComponent = () => {
                 <Button onClick={setFirstPage} disabled={currentPage === 1} style={{margin: '0 5px'}}>First</Button>
                 <Button onClick={handlePrevious} disabled={currentPage === 1} style={{margin: '0 5px'}}>Previous</Button>
                 {pageNumbers.map(number => (
-                    <Button key={number} onClick={() => paginate(number)} style={{margin: '0 5px'}}>
+                    <Button key={number} onClick={() => paginate(number)} color={currentPage ===number ? 'primary' : 'secondary'} style={{margin: '0 5px'}}>
                         {number}
                     </Button>
-                )).slice(currentPage - 3, currentPage + 2)}
+                )).slice(currentPage - 2 < 0 ? 0 : currentPage - 2, currentPage + 2 > pageNumbers.length ? pageNumbers.length : currentPage + 2)}
                 <Button onClick={handleNext} disabled={currentPage === pageNumbers.length} style={{margin: '0 5px'}}>Next</Button>
                 <Button onClick={setLastPage} disabled={currentPage === pageNumbers.length} style={{margin: '0 5px'}}>Last</Button>
             </div>

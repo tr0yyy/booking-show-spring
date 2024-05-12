@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: bookingShow_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: alex
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: devdb
+    ports:
+      - "3306:3306"
+    command: --init-file=/data/application/init.sql
+    networks:
+      - bridged_network
+    volumes:
+      - /var/lib/mysql_data:/var/lib/mysql
+      - ./ci/mysql/init.sql:/data/application/init.sql
+
+  backend:
+    build:
+      context: ./
+      dockerfile: ci/backend/Dockerfile
+    container_name: bookingShow_backend
+    environment:
+      DATABASE_URL: jdbc:mysql://mysql:3306/devdb
+      MYSQL_USER: alex
+      MYSQL_PASSWORD: password
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - bridged_network
+
+  frontend:
+    build:
+      context: ./
+      dockerfile: ci/frontend/Dockerfile
+    container_name: bookingShow_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    networks:
+      - bridged_network
+
+networks:
+  bridged_network:
+    driver: bridge

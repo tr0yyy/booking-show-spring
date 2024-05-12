@@ -1,13 +1,16 @@
 import {useEffect, useState} from "react";
-import {Button, Col, Container, Row} from "reactstrap";
+import {Button} from "reactstrap";
 import FormModalComponent from "../FormModal/FormModalComponent";
 import {ArchiveTicketsComponent} from "../FormModal/ArchiveTickets/ArchiveTicketsComponent";
 import {InsertArtistsComponent} from "../FormModal/InsertArtists/InsertArtistsComponent";
 import {constructApiPath, Models, Operations, Privileges} from "../../../modules/AppDataProvider/DataProviderPaths";
 import {useAppContext} from "../../../modules/Context/ContextFactory";
+import {InsertLocationComponent} from "../FormModal/InsertLocation/InsertLocationComponent";
+import {InsertEventComponent} from "../FormModal/InsertEvent/InsertEventComponent";
 
 const GridButtonsComponent = () => {
     const dataProvider = useAppContext().getDataProvider();
+    const notificationManager = useAppContext().getNotificationManager();
 
   const [showModal, setShowModal] = useState(false);
   const [activeForm, setActiveForm] = useState('');
@@ -31,9 +34,19 @@ const GridButtonsComponent = () => {
               endpoint = constructApiPath(Models.ticket, Operations.archive, Privileges.admin);
               break;
           case 'insertEvent':
+                if (!formData.title || !formData.dateTime || !formData.description || !formData.artistId || !formData.locationId || !formData.ticketPrice) {
+                    setError('All fields are required');
+                    return;
+                }
+                formData.artistIds = [formData.artistId];
+                formData.dateTime = formData.dateTime.replace('T', ' ') + ':00';
               endpoint = constructApiPath(Models.event, Operations.import, Privileges.admin);
               break;
           case 'insertLocation':
+                if (!formData.name || !formData.address || !formData.availableRows || !formData.availableSeatsPerRow) {
+                    setError('All fields are required');
+                    return;
+                }
               endpoint = constructApiPath(Models.location, Operations.import, Privileges.admin);
               break;
           case 'insertArtist':
@@ -50,6 +63,7 @@ const GridButtonsComponent = () => {
           console.log('Making request');
           await dataProvider.postData(endpoint, formData);
           setError('');
+          notificationManager.showNotification('Form submitted successfully');
       } catch (e) {
           setError(e.message.data.error);
       }
@@ -58,17 +72,31 @@ const GridButtonsComponent = () => {
 
   const formContentMapping = {
       archiveTickets: <ArchiveTicketsComponent/>,
-      insertArtist: <InsertArtistsComponent onFormChange={handleFormChange} formData={formData} error={error} />
+      insertArtist: <InsertArtistsComponent onFormChange={handleFormChange} formData={formData} error={error} />,
+      insertLocation: <InsertLocationComponent onFormChange={handleFormChange} formData={formData} error={error} />,
+      insertEvent: <InsertEventComponent onFormChange={handleFormChange} formData={formData} error={error} />
   }
 
   const openModal = (formType) => {
     setActiveForm(formType);
     switch (formType) {
       case 'insertEvent':
-        setFormData({});
+        setFormData({
+            title: '',
+            dateTime: new Date(),
+            description: '',
+            artistId: 0,
+            locationId: 0,
+            ticketPrice: 0
+        });
         break;
       case 'insertLocation':
-        setFormData({});
+        setFormData({
+            name: '',
+            address: '',
+            availableRows: 0,
+            availableSeatsPerRow: 0
+        });
         break;
       case 'insertArtist':
         setFormData({

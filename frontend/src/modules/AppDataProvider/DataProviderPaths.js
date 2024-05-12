@@ -4,6 +4,7 @@ export const Models = {
     location: 'location',
     ticket: 'ticket',
     user: 'user',
+    userspecifics: 'userspecifics',
     auth: 'auth'
 }
 
@@ -15,7 +16,8 @@ export const Operations = {
     login: 'login',
     register: 'register',
     getTickets: 'get_tickets',
-    getArtists: 'get_artists'
+    getArtists: 'get_artists',
+    update: 'update'
 }
 
 export const Privileges = {
