@@ -70,8 +70,15 @@ export const HomeComponent = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
 
-    const [tooltipOpen, setTooltipOpen] = useState(false);
-    const toggle = () => setTooltipOpen(!tooltipOpen);
+    const [tooltipOpen, setTooltipOpen] = useState({});
+
+    const toggleTooltip = (eventId) => {
+        setTooltipOpen(prev => ({
+            ...prev,
+            [eventId]: !prev[eventId]
+        }));
+    };
+
 
     const [currentEvents, setCurrentEvents] = useState([]);
 
@@ -231,14 +238,13 @@ export const HomeComponent = () => {
                                     shouldDisableOrderForEvent(event.eventId) &&
                                     <Tooltip
                                         placement={"top"}
-                                        isOpen={tooltipOpen}
+                                        isOpen={tooltipOpen[event.eventId]}
                                         target={`btn-event-${event.eventId}`}
-                                        toggle={toggle}>You already ordered a ticket for this event
+                                        toggle={() => toggleTooltip(event.eventId)}>You already ordered a ticket for this event
                                     </Tooltip>
                                 }
                             </div>
                         </td>
-
                     </tr>
                 ))}
                 </tbody>
