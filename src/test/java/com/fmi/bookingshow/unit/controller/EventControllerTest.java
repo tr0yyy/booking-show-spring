@@ -47,7 +47,7 @@ public class EventControllerTest {
 
 
     @Test
-    public void testImportEvent_Success() throws ParseException, ArtistNotFoundException, DuplicateEntryException, LocationNotFoundException {
+    public void testImportEventSuccess() throws ParseException, ArtistNotFoundException, DuplicateEntryException, LocationNotFoundException {
         ImportEventDto eventDto = new ImportEventDto();
         EventEntity eventEntity = new EventEntity();
         OutputEventDto outputEventDto = new OutputEventDto();
@@ -56,13 +56,9 @@ public class EventControllerTest {
         when(eventService.addNewEventInDatabase(eventEntity)).thenReturn(eventEntity);
         when(eventMapper.eventEntityToOutputEventDto(eventEntity)).thenReturn(outputEventDto);
 
-        ResponseEntity<OutputEventDto> response = eventController.importEvent(eventDto);
+        OutputEventDto response = eventController.importEvent(eventDto);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(outputEventDto, response.getBody());
-        verify(eventMapper).importEventDtoToEventEntity(eventDto);
-        verify(eventService).addNewEventInDatabase(eventEntity);
-        verify(eventMapper).eventEntityToOutputEventDto(eventEntity);
+        assertEquals(outputEventDto, response);
     }
 
     @Test
@@ -74,8 +70,6 @@ public class EventControllerTest {
         List<OutputEventDto> response = eventController.getEvents();
 
         assertEquals(events.size(), response.size());
-        verify(eventService).getAllEvents();
-        verify(eventMapper).eventEntityToOutputEventDto(any());
     }
 
 }

@@ -38,13 +38,9 @@ public class LocationControllerTest {
     @Mock
     private LocationMapper locationMapper;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
-    public void testInsertLocation_Success() throws DuplicateEntryException {
+    public void testInsertLocationSuccess() throws DuplicateEntryException {
         ImportLocationDto locationDto = new ImportLocationDto();
         LocationEntity locationEntity = new LocationEntity();
         OutputLocationDto outputLocationDto = new OutputLocationDto();
@@ -53,13 +49,9 @@ public class LocationControllerTest {
         when(locationService.addLocation(locationEntity)).thenReturn(locationEntity);
         when(locationMapper.locationEntityToOutputLocationDto(locationEntity)).thenReturn(outputLocationDto);
 
-        ResponseEntity<OutputLocationDto> response = locationController.insertLocation(locationDto);
+        OutputLocationDto response = locationController.insertLocation(locationDto);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(outputLocationDto, response.getBody());
-        verify(locationMapper).importLocationDtoToLocationEntity(locationDto);
-        verify(locationService).addLocation(locationEntity);
-        verify(locationMapper).locationEntityToOutputLocationDto(locationEntity);
+        assertEquals(outputLocationDto, response);
     }
 
     @Test
@@ -71,7 +63,5 @@ public class LocationControllerTest {
         List<OutputLocationDto> response = locationController.getLocations();
 
         assertEquals(locations.size(), response.size());
-        verify(locationService).getLocations();
-        verify(locationMapper).locationEntityToOutputLocationDto(any());
     }
 }

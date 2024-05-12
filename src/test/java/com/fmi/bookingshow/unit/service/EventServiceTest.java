@@ -5,6 +5,7 @@ import com.fmi.bookingshow.exceptions.DuplicateEntryException;
 import com.fmi.bookingshow.exceptions.LocationNotFoundException;
 import com.fmi.bookingshow.model.ArtistEntity;
 import com.fmi.bookingshow.model.EventEntity;
+import com.fmi.bookingshow.model.LocationEntity;
 import com.fmi.bookingshow.repository.ArtistRepository;
 import com.fmi.bookingshow.repository.EventRepository;
 import com.fmi.bookingshow.repository.LocationRepository;
@@ -18,9 +19,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 @SpringBootTest
 @ActiveProfiles("H2-Testing")
@@ -30,12 +33,24 @@ public class EventServiceTest {
 
     @Mock
     private EventRepository eventRepository;
+    @Mock
+    private ArtistRepository artistRepository;
+    @Mock
+    private LocationRepository locationRepository;
 
     @Test
-    void testAddNewEventInDatabase_Success() throws DuplicateEntryException, ArtistNotFoundException, LocationNotFoundException {
+    void testAddNewEventInDatabaseSuccess() throws DuplicateEntryException, ArtistNotFoundException, LocationNotFoundException {
         EventEntity event = createTestEvent();
+        ArtistEntity artist = new ArtistEntity();
+        LocationEntity location = new LocationEntity();
+        artist.setArtistId(1L);
+        location.setLocationId(1L);
+        event.setArtists(List.of(artist));
+        event.setLocation(location);
         Mockito.when(eventRepository.existsById(event.getEventId())).thenReturn(false);
         Mockito.when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
+        Mockito.when(artistRepository.existsById(anyLong())).thenReturn(true);
+        Mockito.when(locationRepository.existsById(anyLong())).thenReturn(true);
 
         EventEntity result = eventService.addNewEventInDatabase(event);
 
@@ -43,7 +58,7 @@ public class EventServiceTest {
     }
 
     @Test
-    void testAddNewEventInDatabase_DuplicateEntryExceptionThrown() {
+    void testAddNewEventInDatabaseDuplicateEntryExceptionThrown() {
         EventEntity event = createTestEvent();
         Mockito.when(eventRepository.existsById(event.getEventId())).thenReturn(true);
 

@@ -29,7 +29,7 @@ public class LocationServiceTest {
     private LocationRepository locationRepository;
 
     @Test
-    public void testAddLocation_Success() throws DuplicateEntryException {
+    public void testAddLocationSuccess() throws DuplicateEntryException {
        LocationEntity location = createTestLocation();
         Mockito.when(locationRepository.findByName(location.getName())).thenReturn(Optional.empty());
         Mockito.when(locationRepository.save(any(LocationEntity.class))).thenReturn(location);
@@ -40,7 +40,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void testAddLocation_DuplicateEntryExceptionThrown() {
+    public void testAddLocationDuplicateEntryExceptionThrown() {
         LocationEntity location = createTestLocation();
         Mockito.when(locationRepository.findByName(location.getName())).thenReturn(Optional.of(location));
 

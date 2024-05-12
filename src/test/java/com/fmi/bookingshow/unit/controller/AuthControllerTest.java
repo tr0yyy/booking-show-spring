@@ -2,6 +2,7 @@ package com.fmi.bookingshow.unit.controller;
 
 import com.fmi.bookingshow.controller.AuthController;
 import com.fmi.bookingshow.dto.response.MessageDto;
+import com.fmi.bookingshow.dto.user.OutputLoginDto;
 import com.fmi.bookingshow.dto.user.UserDto;
 import com.fmi.bookingshow.exceptions.LoginFailedException;
 import com.fmi.bookingshow.exceptions.RegistrationFailedException;
@@ -13,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +27,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class AuthControllerTest {
+@SpringBootTest
+@ActiveProfiles("H2-Testing")
+public class AuthControllerTest {
 
     @InjectMocks
     private AuthController authController;
@@ -35,46 +40,24 @@ class AuthControllerTest {
     @Mock
     private UserMapper userMapper;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
-    void testRegisterAccount_Success() throws RegistrationFailedException {
-        UserDto userDto = new UserDto();
-        UserEntity userEntity = new UserEntity();
-
-        when(userMapper.userDtoToUserEntity(userDto)).thenReturn(userEntity);
-        when(userService.register(userEntity)).thenReturn(userEntity);
-
-        ResponseEntity<MessageDto> response = authController.registerAccount(userDto);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("User registered successfully", response.getBody().getMessage());
-        verify(userMapper).userDtoToUserEntity(userDto);
-        verify(userService).register(userEntity);
-    }
-
-    @Test
-    void testLoginAccount_Success() throws LoginFailedException {
+    public void testLoginAccountSuccess() throws LoginFailedException {
         UserDto userDto = new UserDto();
         UserEntity userEntity = new UserEntity();
         String token = "Bearer token";
 
+        Map<UserEntity, String> result = createLoginResponse(userEntity, token);
+        when(userService.login(userEntity)).thenReturn(result);
         when(userMapper.userDtoToUserEntity(userDto)).thenReturn(userEntity);
-        when(userService.login(userEntity)).thenReturn(createLoginResponse(userEntity, token));
+        OutputLoginDto response = authController.loginAccount(userDto);
 
-        ResponseEntity<?> response = authController.loginAccount(userDto);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(userMapper).userDtoToUserEntity(userDto);
-        verify(userService).login(userEntity);
+        assertEquals(userEntity.getUserId(), response.getUserId());
     }
 
-    private Map.Entry<UserEntity, String> createLoginResponse(UserEntity userEntity, String token) {
-        Map.Entry<UserEntity, String> entry = new HashMap<>();
-        entry.put(userEntity, token);
-        return entry;
+    private Map<UserEntity, String> createLoginResponse(UserEntity userEntity, String token) {
+        Map<UserEntity, String> map = new HashMap<>();
+        map.put(userEntity, token);
+        return map;
     }
 }

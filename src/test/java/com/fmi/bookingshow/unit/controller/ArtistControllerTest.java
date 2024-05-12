@@ -39,11 +39,12 @@ public class ArtistControllerTest {
     private ArtistMapper artistMapper;
 
     @Test
-    public void testImportArtist_Success() throws DuplicateEntryException {
+    public void testImportArtistSuccess() throws DuplicateEntryException {
         ArtistDto artistDto = new ArtistDto();
         ArtistEntity artistEntity = new ArtistEntity();
 
         when(artistMapper.artistDtoToArtistEntity(artistDto)).thenReturn(artistEntity);
+        when(artistMapper.artistEntityToArtistDto(artistEntity)).thenReturn(artistDto);
         when(artistService.importNewArtist(artistEntity)).thenReturn(artistEntity);
 
         ArtistDto response = artistController.importArtist(artistDto);
