@@ -51,10 +51,15 @@ export const RegisterComponent = () => {
             return;
         }
         const endpoint = constructApiPath(Models.auth, Operations.register, Privileges.none)
-        const result = await dataProvider.postData(endpoint, {username, password, email});
-        console.log(result);
-        navigate('/login');
-        setError('');
+        try {
+            const result = await dataProvider.postData(endpoint, {username, password, email});
+            console.log(result);
+            navigate('/login');
+            setError('');
+        } catch (e) {
+            console.log(e)
+            setError(e.response.data?.error ?? e.message)
+        }
     };
 
     return (
