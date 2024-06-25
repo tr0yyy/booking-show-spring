@@ -1,6 +1,7 @@
 package fmi.user_service.controller;
 
 import fmi.user_service.dto.response.MessageDto;
+import fmi.user_service.dto.user.UserDto;
 import fmi.user_service.dto.user.UserSpecificsDto;
 import fmi.user_service.exceptions.OperationNotPermittedException;
 import fmi.user_service.exceptions.RegistrationFailedException;
@@ -9,10 +10,7 @@ import fmi.user_service.model.UserEntity;
 import fmi.user_service.service.UserService;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -26,15 +24,19 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    @GetMapping("/core/user/get")
+    public boolean userExists(@RequestBody UserDto userDto) {
+        return userService.getUserByUsername(userDto.getUsername()) != null;
+    }
+
     @GetMapping("/core/userspecifics/get")
-    public UserSpecificsDto getUserSpecifics(Authentication authentication) {
-        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
-        return userService.getUserSpecifics(currentUser);
+    public UserSpecificsDto getUserSpecifics(@RequestParam String username) throws OperationNotPermittedException {
+        return userService.getUserSpecifics(username);
     }
 
     @PostMapping("/core/userspecifics/update")
-    public UserSpecificsDto updateUserSpecifics(Authentication authentication, @RequestBody UserSpecificsDto userSpecificsDto) throws ParseException {
-        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+    public UserSpecificsDto updateUserSpecifics(@RequestBody UserSpecificsDto userSpecificsDto) throws ParseException {
+        UserEntity currentUser = userService.getUserByUsername(userSpecificsDto.getUsername());
         return userService.updateUserSpecifics(currentUser, userMapper.userSpecificsDtoToUserSpecificsEntity(userSpecificsDto));
     }
 

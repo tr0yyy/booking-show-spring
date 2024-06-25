@@ -2,7 +2,6 @@ package com.fmi.bookingshow.component;
 
 import com.fmi.bookingshow.model.UserEntity;
 import com.fmi.bookingshow.repository.UserRepository;
-import com.fmi.bookingshow.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

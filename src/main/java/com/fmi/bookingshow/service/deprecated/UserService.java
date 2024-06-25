@@ -1,4 +1,4 @@
-package com.fmi.bookingshow.service;
+package com.fmi.bookingshow.service.deprecated;
 
 import com.fmi.bookingshow.component.JwtSecurity;
 import com.fmi.bookingshow.constants.Role;
@@ -11,13 +11,12 @@ import com.fmi.bookingshow.model.UserEntity;
 import com.fmi.bookingshow.model.UserSpecificsEntity;
 import com.fmi.bookingshow.repository.UserRepository;
 import com.fmi.bookingshow.repository.UserSpecificsRepository;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Service
+//DEPRECATED @Service
 public class UserService {
     private final UserRepository userRepository;
     private final UserSpecificsRepository userSpecificsRepository;

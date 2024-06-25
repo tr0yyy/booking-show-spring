@@ -2,6 +2,7 @@ package fmi.user_service.service;
 
 import fmi.user_service.component.JwtSecurity;
 import fmi.user_service.constants.Role;
+import fmi.user_service.dto.user.UserDto;
 import fmi.user_service.dto.user.UserSpecificsDto;
 import fmi.user_service.exceptions.LoginFailedException;
 import fmi.user_service.exceptions.OperationNotPermittedException;
@@ -71,7 +72,11 @@ public class UserService {
         return Collections.singletonMap(userFromDatabase, jwtSecurity.generateToken(userFromDatabase));
     }
 
-    public UserSpecificsDto getUserSpecifics(UserEntity user) {
+    public UserSpecificsDto getUserSpecifics(String username) throws OperationNotPermittedException {
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            throw new OperationNotPermittedException("User not found");
+        }
         return userMapper.userEntitytoUserSpecificsDto(user);
     }
 

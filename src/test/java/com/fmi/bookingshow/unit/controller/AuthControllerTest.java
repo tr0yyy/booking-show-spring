@@ -1,22 +1,16 @@
 package com.fmi.bookingshow.unit.controller;
 
 import com.fmi.bookingshow.controller.AuthController;
-import com.fmi.bookingshow.dto.response.MessageDto;
 import com.fmi.bookingshow.dto.user.OutputLoginDto;
 import com.fmi.bookingshow.dto.user.UserDto;
 import com.fmi.bookingshow.exceptions.LoginFailedException;
-import com.fmi.bookingshow.exceptions.RegistrationFailedException;
 import com.fmi.bookingshow.mapper.UserMapper;
 import com.fmi.bookingshow.model.UserEntity;
-import com.fmi.bookingshow.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
+import com.fmi.bookingshow.service.deprecated.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
