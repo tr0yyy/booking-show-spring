@@ -61,5 +61,9 @@ public class EventService {
         return eventRepository.findAll();
     }
 
+    public EventEntity getEventById(long eventId) {
+        return eventRepository.findById(eventId).orElse(null);
+    }
+
 
 }

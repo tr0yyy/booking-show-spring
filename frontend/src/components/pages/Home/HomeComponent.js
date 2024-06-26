@@ -166,6 +166,10 @@ export const HomeComponent = () => {
     useEffect(() => {
         async function fetchData() {
             try {
+                const hateosEventsData = await dataProvider.fetchData(
+                    '/core/event/get_all_events'
+                );
+                console.log(hateosEventsData)
                 const fetchedEvents = await dataProvider.fetchData(
                     constructApiPath(Models.event, Operations.get, Privileges.core)
                 );
@@ -178,7 +182,7 @@ export const HomeComponent = () => {
                 const fetchedArtists = await dataProvider.fetchData(
                     constructApiPath(Models.event, Operations.getArtists, Privileges.core)
                 );
-                setEvents(fetchedEvents);
+                setEvents(hateosEventsData.content);
                 setLocations(fetchedLocations);
                 setTickets(fetchedTickets);
                 setArtists(fetchedArtists);
