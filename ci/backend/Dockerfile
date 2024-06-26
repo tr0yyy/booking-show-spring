@@ -8,8 +8,6 @@ COPY mvnw .
 COPY mvnw.cmd .
 COPY .mvn/ .mvn/
 
-RUN chmod +x ./mvnw && ./mvnw package
-
-EXPOSE 8080
+EXPOSE 8090
 
 CMD ["./mvnw", "spring-boot:run"]
