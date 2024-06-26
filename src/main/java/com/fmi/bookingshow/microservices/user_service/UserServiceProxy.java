@@ -8,14 +8,12 @@ import com.fmi.bookingshow.dto.user.UserSpecificsDto;
 import com.fmi.bookingshow.microservices.GenericServiceProxy;
 import feign.Param;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "user-service")
 public interface UserServiceProxy extends GenericServiceProxy {
-    @GetMapping("/core/userspecifics/get?username={username}")
+    @PostMapping("/core/userspecifics/get?username={username}")
     ResponseDto<UserSpecificsDto> getUserSpecifics(@Param("username") String username);
 
     @PostMapping("/core/userspecifics/update")

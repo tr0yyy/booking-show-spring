@@ -24,14 +24,14 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @GetMapping("/core/user/get")
-    public boolean userExists(@RequestBody UserDto userDto) {
-        return userService.getUserByUsername(userDto.getUsername()) != null;
+    @PostMapping("/core/user/get")
+    public Boolean userExists(Authentication authentication) {
+        return authentication.getPrincipal() != null;
     }
 
-    @GetMapping("/core/userspecifics/get")
-    public UserSpecificsDto getUserSpecifics(@RequestParam String username) throws OperationNotPermittedException {
-        return userService.getUserSpecifics(username);
+    @PostMapping("/core/userspecifics/get")
+    public UserSpecificsDto getUserSpecifics(Authentication authentication) throws OperationNotPermittedException {
+        return userService.getUserSpecifics(((UserEntity) authentication.getPrincipal()).getUsername());
     }
 
     @PostMapping("/core/userspecifics/update")
