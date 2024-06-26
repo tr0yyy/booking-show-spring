@@ -6,7 +6,7 @@ import {ContextFactoryGenerator} from "./modules/Context/ContextFactory";
 class App extends Component {
   render() {
     return (
-      <ContextFactoryGenerator baseUrl="http://localhost:8080">
+      <ContextFactoryGenerator baseUrl="http://localhost:8080/bookingshow">
         <RouterComponent/>
       </ContextFactoryGenerator>
     )

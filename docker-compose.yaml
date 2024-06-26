@@ -18,6 +18,81 @@ services:
       - /var/lib/mysql_data:/var/lib/mysql
       - ./ci/mysql/init.sql:/data/application/init.sql
 
+  configserver:
+    build:
+      context: ./microservices/configserver
+      dockerfile: ci/Dockerfile
+    container_name: bookingShow_config
+    ports:
+      - "8070:8070"
+    depends_on:
+      - mysql
+    networks:
+      - bridged_network
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8070/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  eurekaserver:
+    build:
+      context: ./microservices/eurekaserver
+      dockerfile: ci/Dockerfile
+    container_name: bookingShow_eureka
+    ports:
+      - "8761:8761"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    networks:
+      - bridged_network
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8761/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  gatewayserver:
+    build:
+      context: ./microservices/gatewayserver
+      dockerfile: ci/Dockerfile
+    container_name: bookingShow_gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+    networks:
+      - bridged_network
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: bookingShow_zipkin
+    ports:
+      - "9411:9411"
+    depends_on:
+      - gatewayserver
+    networks:
+      - bridged_network
+
+  userservice:
+    build:
+      context: ./microservices/user-service
+      dockerfile: ci/Dockerfile
+    container_name: bookingShow_userservice
+    environment:
+      DATABASE_URL: jdbc:mysql://mysql:3306/devdb
+      MYSQL_USER: alex
+      MYSQL_PASSWORD: password
+    ports:
+      - "8081:8081"
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+    networks:
+      - bridged_network
+
   backend:
     build:
       context: ./
@@ -28,9 +103,10 @@ services:
       MYSQL_USER: alex
       MYSQL_PASSWORD: password
     ports:
-      - "8080:8080"
+      - "8090:8090"
     depends_on:
-      - mysql
+      eurekaserver:
+        condition: service_healthy
     networks:
       - bridged_network
 
@@ -42,7 +118,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - mysql
+      - backend
     networks:
       - bridged_network
 

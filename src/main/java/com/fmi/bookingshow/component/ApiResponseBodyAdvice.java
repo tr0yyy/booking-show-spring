@@ -23,8 +23,8 @@ public class ApiResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
-                                      Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                      ServerHttpRequest request, ServerHttpResponse response) {
+                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  ServerHttpRequest request, ServerHttpResponse response) {
         List<String> responseDtoPaths = List.of(Apis.AUTH, Apis.CORE, Apis.ADMIN);
         log.info("Writing to %s".formatted(request.getURI().getPath()));
         for(String path : responseDtoPaths) {

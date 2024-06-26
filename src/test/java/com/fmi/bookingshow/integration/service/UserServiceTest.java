@@ -1,28 +1,18 @@
 package com.fmi.bookingshow.integration.service;
 
-import com.fmi.bookingshow.component.JwtSecurity;
 import com.fmi.bookingshow.exceptions.LoginFailedException;
 import com.fmi.bookingshow.exceptions.RegistrationFailedException;
 import com.fmi.bookingshow.model.UserEntity;
-import com.fmi.bookingshow.model.UserSpecificsEntity;
 import com.fmi.bookingshow.repository.UserRepository;
-import com.fmi.bookingshow.repository.UserSpecificsRepository;
-import com.fmi.bookingshow.service.UserService;
-import org.aspectj.lang.annotation.Before;
+import com.fmi.bookingshow.service.deprecated.UserService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 

@@ -24,9 +24,9 @@ export const ProfileComponent = () => {
 
     useEffect( () =>
     async function fetchData() {
-        const endpoint = constructApiPath(Models.userspecifics, Operations.get, Privileges.core);
+        const endpoint = `${constructApiPath(Models.userspecifics, Operations.get, Privileges.core)}`;
         try {
-            const {dateOfBirth, bio, preferences} = await dataProvider.fetchData(endpoint);
+            const {dateOfBirth, bio, preferences} = await dataProvider.postData(endpoint);
             if (dateOfBirth) {
                 setDbDateOfBirth(dateOfBirth.split(' ')[0]);
                 setFormDateOfBirth(dateOfBirth.split(' ')[0]);
