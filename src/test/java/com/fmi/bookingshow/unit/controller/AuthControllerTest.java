@@ -1,6 +1,6 @@
 package com.fmi.bookingshow.unit.controller;
 
-import com.fmi.bookingshow.controller.AuthController;
+import com.fmi.bookingshow.controller.deprecated.AuthController;
 import com.fmi.bookingshow.dto.user.OutputLoginDto;
 import com.fmi.bookingshow.dto.user.UserDto;
 import com.fmi.bookingshow.exceptions.LoginFailedException;
